@@ -17,6 +17,7 @@ const Work = require("./models/works.model");
 const About_us = require("./models/about_us.model");
 const Person = require("./models/person.model");
 const Social = require("./models/social.model");
+const WorkCategory = require("./models/work_category.model");
 const app = express();
 
 (async () => {
@@ -28,7 +29,7 @@ const app = express();
       useNewUrlParser: true,
       useCreateIndex: true,
       useUnifiedTopology: true,
-      useFindAndModify: true,
+      useFindAndModify: false,
     });
     AdminBro.registerAdapter(AdminBroMongoose);
 
@@ -45,6 +46,12 @@ const app = express();
       resources: [
         {
           resource: Work,
+          options: {
+            parent: contentParent,
+          },
+        },
+        {
+          resource: WorkCategory,
           options: {
             parent: contentParent,
           },
@@ -115,24 +122,18 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.set("views", path.join(__dirname, "public"));
 
-const customizeWorks = (works) => {
-  let arr = [[], [], []];
-  for (let i = 0; i < works.length; i++) {
-    arr[i % arr.length].push(works[i]);
-  }
-  return arr;
-};
-
 app.get("/", async (req, res) => {
-  const DB_work_data = await Work.findOne({});
   const { who_i_am, what_i_do } = await About_us.findOne({});
   const person = await Person.findOne({});
   const social = await Social.findOne({});
-  let works = customizeWorks(DB_work_data.works);
 
+  const work_categories = await WorkCategory.find({}).populate({
+    path: "works",
+  });
+  // console.log(work_categories);
   res.render("index", {
-    works,
-    work_text: DB_work_data.work_text,
+    work_categories,
+    work_text: "hii",
     who_i_am,
     what_i_do,
     person,

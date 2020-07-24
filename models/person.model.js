@@ -18,6 +18,10 @@ const person = new Schema({
     required: true,
     type: String,
   },
+  background_img_url: {
+    required: true,
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("Person", person);

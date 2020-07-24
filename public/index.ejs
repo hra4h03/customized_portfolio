@@ -55,7 +55,7 @@
 			<div id="main">
 
 				<!-- Intro -->
-					<section id="top" class="one dark cover">
+					<section id="top" class="one dark cover" style="background-image: url('<%= person.background_img_url %>');">
 						<div class="container">
 
 							<header>
@@ -79,26 +79,35 @@
 							<header>
 								<h2>My Works</h2>
 							</header>
+							<% work_categories.forEach(category => { %>
+								<div style="margin-top: 20px;">
+									<h3><%= category.name %> </h3>
 
-							<p><%= work_text %> </p>
-
-							<!-- <pre><%# JSON.stringify(works, null, 2)  %></pre> -->
-							<div class="row">
-
-								<% works.forEach(column => { %>
-										<div class="col-4 col-12-mobile">
-											<% column.forEach(work => { %>
-												<article class="item">
-													<a href="<%= work.url %>"  class="image fit"><img src="<%= work.image_url %>" alt="" /></a>
-													<header>
-														<h3><%= work.name %> </h3>
-													</header>
-												</article>
-											<% }) %>
-										</div>			
-								<% }) %>
-								
-							</div>
+									<p><%= category.description %> </p>
+									<% const customizeWorks = (works) => {
+											let arr = [[], [], []];
+											for (let i = 0; i < works.length; i++) {
+												arr[i % arr.length].push(works[i]);
+											}
+											return arr;
+										};  %> 
+									<div class="row">
+										<% customizeWorks(category.works).forEach(column => { %>
+												<div class="col-4 col-12-mobile">
+													<% column.forEach(work => { %>
+														<article class="item">
+															<a class="image fit"><img src="<%= work.image_url %>" alt="" /></a>
+															<header>
+																<h3><%= work.name %> </h3>
+															</header>
+														</article>
+													<% }) %>
+												</div>			
+										<% }) %>
+									</div>
+								</div>
+							<% }) %>
+						
 						</div>
 					</section>
 
